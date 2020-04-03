@@ -10,8 +10,13 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="false"
         android:theme="@style/AppTheme">
+
         <activity android:name=".LyricsActivity"></activity>
-        <activity android:name=".MainActivity">
+        <activity android:name=".MainActivity"></activity>
+        <activity
+            android:name=".MenuActivity"
+            android:label="@string/title_activity_menu"
+            android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

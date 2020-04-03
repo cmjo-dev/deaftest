@@ -1,6 +1,21 @@
 <resources>
     <string name="app_name">Deaf Test</string>
+
     <string name="welcome_message">Welcome to the Deaf Test app!</string>
     <string name="songs_count">Database songs count: %1$d\t Results songs count: %2$d</string>
     <string name="song_list_item">%1$s - %2$s (%3$s)</string>
+
+    <string name="title_activity_menu">Menu</string>
+    <string name="navigation_drawer_open">Open the navigation drawer</string>
+    <string name="navigation_drawer_close">Close the navigation drawer</string>
+    <string name="nav_header_title">Android Studio</string>
+    <string name="nav_header_subtitle">android.studio@android.com</string>
+    <string name="nav_header_desc">Navigation header</string>
+    <string name="action_settings">Settings</string>
+
+    <!-- Items of the navigation drawer menu. -->
+    <string name="menu_home">Home</string>
+    <string name="menu_create_test">Create a new deaf test</string>
+    <string name="menu_received_tests">Received deaf tests</string>
+    <string name="menu_sent_tests">Sent deaf tests</string>
 </resources>
