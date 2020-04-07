@@ -1,20 +1,22 @@
 package com.kastelle.deaftest
 
+import android.app.Application
+import android.content.Context
+import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.kastelle.deaftest.data.Song
+import androidx.room.Room
+import com.kastelle.deaftest.database.AppDatabase
+import com.kastelle.deaftest.database.Song
 
-class MainViewModel: ViewModel() {
+class MainViewModel(application: Application) : AndroidViewModel(application) {
 
     private val songs: MutableLiveData<List<Song>> = MutableLiveData()
 
     init {
-        songs.value = listOf(
-            Song("Oui ou Non", "Angele", "Brol", "C'est oui\nOu bien\nC'est non"),
-            Song("Que du love", "Kiddy Smile", "Brol", "Dipinsa ano saudu"),
-            Song("J'entends", "Angele", "Brol", "Avant qu'il parte j'en avais peur")
-        )
+        val db = AppDatabase.getInstance(getApplication<Application>().applicationContext)
+        songs.value = db.songDao().getAll()
     }
 
     fun getSongs(): LiveData<List<Song>> = songs

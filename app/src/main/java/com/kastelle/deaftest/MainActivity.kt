@@ -1,9 +1,6 @@
 package com.kastelle.deaftest
 
-import android.app.SearchManager
-import android.content.Context
 import android.os.Bundle
-import android.view.Menu
 import android.widget.ArrayAdapter
 import android.widget.ListView
 import android.widget.SearchView
@@ -11,7 +8,7 @@ import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
-import com.kastelle.deaftest.data.Song
+import com.kastelle.deaftest.database.Song
 
 /** UI controller for the main interface. */
 class MainActivity : AppCompatActivity() {
@@ -22,7 +19,6 @@ class MainActivity : AppCompatActivity() {
     private lateinit var listView: ListView
     private lateinit var searchView: SearchView
     private lateinit var adapter: ArrayAdapter<Song>
-    //private val songs = listOf("song 1", "song 2", "oui ou non")
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
