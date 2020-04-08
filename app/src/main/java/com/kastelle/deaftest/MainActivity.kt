@@ -1,10 +1,7 @@
 package com.kastelle.deaftest
 
 import android.os.Bundle
-import android.widget.ArrayAdapter
-import android.widget.ListView
-import android.widget.SearchView
-import android.widget.TextView
+import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
@@ -14,7 +11,10 @@ import com.kastelle.deaftest.database.Song
 class MainActivity : AppCompatActivity() {
 
     private lateinit var viewModel: MainViewModel
-    //private lateinit var songsTextView: TextView
+    private lateinit var songsCountTextView: TextView
+
+    private var databaseCount = 0
+    private var filterCount = 0
 
     private lateinit var listView: ListView
     private lateinit var searchView: SearchView
@@ -24,7 +24,7 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        //songsTextView = findViewById(R.id.songs_text)
+        songsCountTextView = findViewById(R.id.songs_count_text)
 
         listView = findViewById(R.id.list_view)
         searchView = findViewById(R.id.search_view)
@@ -37,27 +37,25 @@ class MainActivity : AppCompatActivity() {
             }
 
             override fun onQueryTextChange(newText: String): Boolean {
-                adapter.filter.filter(newText)
+                adapter.filter.filter(newText) {
+                    filterCount = it
+                    updateSongsCountView()
+                }
                 return true
             }
         })
 
         viewModel = ViewModelProviders.of(this)[MainViewModel::class.java]
         viewModel.getSongs().observe(this, Observer {
+            databaseCount = it.size
+            filterCount = databaseCount
             adapter = ArrayAdapter<Song>(this, android.R.layout.simple_list_item_1, it)
             listView.adapter = adapter
+            updateSongsCountView()
         })
     }
 
-/*    override fun onCreateOptionsMenu(menu: Menu): Boolean {
-        menuInflater.inflate(R.menu.options_menu, menu)
-        
-*//*        // Associate searchable configuration with the SearchView
-        val searchManager = getSystemService(Context.SEARCH_SERVICE) as SearchManager
-        (menu.findItem(R.id.search).actionView as SearchView).apply {
-            setSearchableInfo(searchManager.getSearchableInfo(componentName))
-        }*//*
-
-        return true
-    }*/
+    private fun updateSongsCountView() {
+        songsCountTextView.text = getString(R.string.songs_count, databaseCount, filterCount)
+    }
 }

@@ -1,7 +1,5 @@
 <resources>
     <string name="app_name">Deaf Test</string>
     <string name="welcome_message">Welcome to the Deaf Test app!</string>
-    <string name="search_title">Search title</string>
-    <string name="search_hint">Enter the song you want the lyrics of</string>
-    <string name="search_results_text">Search results incoming!</string>
+    <string name="songs_count">Database songs count: %1$d\t Results songs count: %2$d</string>
 </resources>
