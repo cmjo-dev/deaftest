@@ -5,6 +5,8 @@ import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.kastelle.deaftest.database.Song
 
 /** UI controller for the main interface. */
@@ -16,20 +18,27 @@ class MainActivity : AppCompatActivity() {
     private var databaseCount = 0
     private var filterCount = 0
 
-    private lateinit var listView: ListView
+    private lateinit var recyclerView: RecyclerView
+    private lateinit var viewAdapter: SongsListAdapter
+    private lateinit var viewManager: RecyclerView.LayoutManager
+
     private lateinit var searchView: SearchView
-    private lateinit var adapter: ArrayAdapter<Song>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
         songsCountTextView = findViewById(R.id.songs_count_text)
-
-        listView = findViewById(R.id.list_view)
         searchView = findViewById(R.id.search_view)
-        adapter = ArrayAdapter<Song>(this, android.R.layout.simple_list_item_1, listOf())
-        listView.adapter = adapter
+
+        viewManager = LinearLayoutManager(this)
+        viewAdapter = SongsListAdapter(mutableListOf())
+
+        recyclerView = findViewById<RecyclerView>(R.id.songs_recycler_view).apply {
+            setHasFixedSize(true)
+            layoutManager = viewManager
+            adapter = viewAdapter
+        }
 
         searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String?): Boolean {
@@ -37,7 +46,7 @@ class MainActivity : AppCompatActivity() {
             }
 
             override fun onQueryTextChange(newText: String): Boolean {
-                adapter.filter.filter(newText) {
+                viewAdapter.filter.filter(newText) {
                     filterCount = it
                     updateSongsCountView()
                 }
@@ -49,8 +58,8 @@ class MainActivity : AppCompatActivity() {
         viewModel.getSongs().observe(this, Observer {
             databaseCount = it.size
             filterCount = databaseCount
-            adapter = ArrayAdapter<Song>(this, android.R.layout.simple_list_item_1, it)
-            listView.adapter = adapter
+            viewAdapter = SongsListAdapter(it.toMutableList())
+            recyclerView.adapter = viewAdapter
             updateSongsCountView()
         })
     }

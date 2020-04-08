@@ -56,8 +56,11 @@ dependencies {
     implementation "androidx.room:room-guava:$room_version"
     // Test helpers
     testImplementation "androidx.room:room-testing:$room_version"
-    
+
     // Gson
     implementation "com.google.code.gson:gson:2.8.0"
+
+    // Recycler view.
+    implementation 'com.android.support:recyclerview-v7:29.0.0'
 
 }

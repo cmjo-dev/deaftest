@@ -20,6 +20,7 @@ abstract class AppDatabase : RoomDatabase() {
                 var instance = INSTANCE
 
                 if (instance == null) {
+                    // TODO: don't allow main thread queries.
                     instance = Room.databaseBuilder(context.applicationContext, AppDatabase::class.java, "songs.db")
                         .allowMainThreadQueries()
                         .fallbackToDestructiveMigration()

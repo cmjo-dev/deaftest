@@ -14,7 +14,6 @@ class DeafTestApplication: Application() {
     override fun onCreate() {
         super.onCreate()
 
-        //TODO: apply the singleton pattern to it + don't allow on main thread.
         val db = AppDatabase.getInstance(applicationContext)
         db.clearAllTables()
 
