@@ -8,7 +8,7 @@ import androidx.lifecycle.ViewModel
 class ReceivedTestsViewModel : ViewModel() {
 
     private val _text = MutableLiveData<String>().apply {
-        value = "This is slideshow Fragment"
+        value = "This is ReceivedTestsFragment"
     }
     val text: LiveData<String> = _text
 }

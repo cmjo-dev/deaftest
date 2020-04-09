@@ -8,7 +8,6 @@ import com.kastelle.deaftest.database.AppDatabase
 import com.kastelle.deaftest.database.Song
 import java.io.BufferedReader
 
-
 class DeafTestApplication: Application() {
 
     override fun onCreate() {
