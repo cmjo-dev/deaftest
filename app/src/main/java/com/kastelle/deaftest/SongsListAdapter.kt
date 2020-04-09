@@ -13,10 +13,13 @@ import java.util.*
 import kotlin.collections.ArrayList
 
 
-class SongsListAdapter(private val songs: MutableList<Song>): RecyclerView.Adapter<SongsListAdapter.SongViewHolder>(), Filterable {
+class SongsListAdapter(private val songs: MutableList<Song>, private val recyclerViewClickListener: RecyclerViewClickListener):
+    RecyclerView.Adapter<SongsListAdapter.SongViewHolder>(), Filterable {
 
     // Single not-to-be-modified copy of original data in the list.
     private val originalList = ArrayList(songs)
+
+    //private val onClickListener: View.OnClickListener = View.OnClickListener {  }
 
     // a method-body to invoke when search returns nothing. It can be null.
     private var onNothingFound: (() -> Unit)? = null
@@ -25,15 +28,23 @@ class SongsListAdapter(private val songs: MutableList<Song>): RecyclerView.Adapt
     // Complex data items may need more than one view per item, and
     // you provide access to all the views for a data item in a view holder.
     // Each data item is just a string in this case that is shown in a TextView.
-    class SongViewHolder(val view: View) : RecyclerView.ViewHolder(view)
+    class SongViewHolder(val view: View, private val listener: RecyclerViewClickListener) : RecyclerView.ViewHolder(view), View.OnClickListener {
+
+        init {
+            view.setOnClickListener(this)
+        }
+
+        override fun onClick(view: View?) {
+            //TODO: get adapter position instead?
+            listener.onRecyclerViewClicked(layoutPosition)
+        }
+    }
 
     // Create new views (invoked by the layout manager)
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SongViewHolder {
         // create a new view
         val view = LayoutInflater.from(parent.context).inflate(R.layout.songs_list_item, parent, false) as View
-        // set the view's size, margins, paddings and layout parameters
-        //...
-        return SongViewHolder(view)
+        return SongViewHolder(view, recyclerViewClickListener)
     }
 
     // Replace the contents of a view (invoked by the layout manager)
@@ -46,6 +57,8 @@ class SongsListAdapter(private val songs: MutableList<Song>): RecyclerView.Adapt
     }
 
     override fun getItemCount(): Int = songs.size
+
+    fun getItem(position: Int) = songs[position]
 
     private val REGEX_UNACCENT = "\\p{InCombiningDiacriticalMarks}+".toRegex()
 
@@ -82,5 +95,10 @@ class SongsListAdapter(private val songs: MutableList<Song>): RecyclerView.Adapt
                 notifyDataSetChanged()
             }
         }
+    }
+
+    @FunctionalInterface
+    interface RecyclerViewClickListener {
+        fun onRecyclerViewClicked(position: Int)
     }
 }

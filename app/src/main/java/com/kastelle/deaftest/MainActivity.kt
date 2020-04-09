@@ -1,16 +1,20 @@
 package com.kastelle.deaftest
 
+import android.content.Intent
 import android.os.Bundle
+import android.view.MenuItem
+import android.view.View
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.RecyclerView.NO_POSITION
 import com.kastelle.deaftest.database.Song
 
 /** UI controller for the main interface. */
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity(), SongsListAdapter.RecyclerViewClickListener {
 
     private lateinit var viewModel: MainViewModel
     private lateinit var songsCountTextView: TextView
@@ -32,12 +36,13 @@ class MainActivity : AppCompatActivity() {
         searchView = findViewById(R.id.search_view)
 
         viewManager = LinearLayoutManager(this)
-        viewAdapter = SongsListAdapter(mutableListOf())
+        viewAdapter = SongsListAdapter(mutableListOf(), this)
 
         recyclerView = findViewById<RecyclerView>(R.id.songs_recycler_view).apply {
             setHasFixedSize(true)
             layoutManager = viewManager
             adapter = viewAdapter
+            isClickable = true
         }
 
         searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
@@ -58,7 +63,7 @@ class MainActivity : AppCompatActivity() {
         viewModel.getSongs().observe(this, Observer {
             databaseCount = it.size
             filterCount = databaseCount
-            viewAdapter = SongsListAdapter(it.toMutableList())
+            viewAdapter = SongsListAdapter(it.toMutableList(), this)
             recyclerView.adapter = viewAdapter
             updateSongsCountView()
         })
@@ -66,5 +71,14 @@ class MainActivity : AppCompatActivity() {
 
     private fun updateSongsCountView() {
         songsCountTextView.text = getString(R.string.songs_count, databaseCount, filterCount)
+    }
+
+
+    override fun onRecyclerViewClicked(position: Int) {
+        if (position != NO_POSITION) {
+            val intent = Intent(this, LyricsActivity::class.java)
+            intent.putExtra("KEY_LYRICS", viewAdapter.getItem(position).lyrics)
+            startActivity(intent)
+        }
     }
 }
