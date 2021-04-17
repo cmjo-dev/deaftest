@@ -5,21 +5,19 @@ import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.Query
 
+/** Class allowing to interact with the [Song] database table. */
 @Dao
 interface SongDao {
 
+    /** Get all the songs. */
     @Query("SELECT * FROM song")
     fun getAll(): List<Song>
 
-    @Query("SELECT * FROM song WHERE uid IN (:songIds)")
-    fun loadAllByIds(songIds: IntArray): List<Song>
-
-    @Query("SELECT * FROM song WHERE title LIKE :first AND artist LIKE :last LIMIT 1")
-    fun findByName(first: String, last: String): Song
-
+    /** Insert all the given songs. */
     @Insert
     fun insertAll(vararg songs: Song)
 
+    /** Delete all the given songs. */
     @Delete
     fun delete(song: Song)
 }

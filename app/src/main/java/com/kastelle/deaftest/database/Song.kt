@@ -4,13 +4,7 @@ import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 
-/** Class representing a song. */
-/*data class Song (val title: String, val artist: String, val album: String, val lyrics: String) {
-    override fun toString(): String {
-        return "$title - $artist ($album)\n$lyrics"
-    }
-}*/
-
+/** Represents the database table containing the songs. */
 @Entity
 data class Song(
     @PrimaryKey(autoGenerate = true) val uid: Int,

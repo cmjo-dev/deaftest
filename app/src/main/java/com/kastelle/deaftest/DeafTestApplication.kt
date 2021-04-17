@@ -1,13 +1,12 @@
 package com.kastelle.deaftest
 
 import android.app.Application
-import android.util.Log
-import androidx.room.Room
 import com.google.gson.Gson
 import com.kastelle.deaftest.database.AppDatabase
 import com.kastelle.deaftest.database.Song
 import java.io.BufferedReader
 
+@Suppress("unused") // Used in the manifest only.
 class DeafTestApplication: Application() {
 
     override fun onCreate() {

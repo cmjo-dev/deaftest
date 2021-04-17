@@ -1,36 +1,34 @@
 package com.kastelle.deaftest.ui.create
 
-import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.SearchView
 import android.widget.TextView
+import android.widget.Toast
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProviders
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.NO_POSITION
-import com.kastelle.deaftest.LyricsActivity
 import com.kastelle.deaftest.R
 import com.kastelle.deaftest.SongsListAdapter
 
-/** TODO: add the javadoc. */
+/** UI controller representing the fragment allowing to create a new deaf test. */
 class CreateTestFragment : Fragment(), SongsListAdapter.RecyclerViewClickListener {
 
     private lateinit var viewModel: CreateTestViewModel
-    private lateinit var songsCountTextView: TextView
 
+    // TODO: Should be retrieved from VM directly?
     private var databaseCount = 0
     private var filterCount = 0
 
+    private lateinit var songsCountTextView: TextView
+    private lateinit var searchView: SearchView
     private lateinit var recyclerView: RecyclerView
     private lateinit var viewAdapter: SongsListAdapter
     private lateinit var viewManager: RecyclerView.LayoutManager
-
-    private lateinit var searchView: SearchView
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -44,7 +42,7 @@ class CreateTestFragment : Fragment(), SongsListAdapter.RecyclerViewClickListene
         viewManager = LinearLayoutManager(activity)
         viewAdapter = SongsListAdapter(mutableListOf(), this)
 
-        recyclerView = (root.findViewById<RecyclerView>(R.id.songs_recycler_view) as RecyclerView).apply {
+        recyclerView = (root.findViewById(R.id.songs_recycler_view) as RecyclerView).apply {
             setHasFixedSize(true)
             layoutManager = viewManager
             adapter = viewAdapter
@@ -65,26 +63,34 @@ class CreateTestFragment : Fragment(), SongsListAdapter.RecyclerViewClickListene
             }
         })
 
-        viewModel = ViewModelProviders.of(this)[CreateTestViewModel::class.java]
-        viewModel.getSongs().observe(this, Observer {
+        viewModel = ViewModelProvider(this).get(CreateTestViewModel::class.java)
+        viewModel.getSongs().observe(viewLifecycleOwner, {
             databaseCount = it.size
             filterCount = databaseCount
             viewAdapter = SongsListAdapter(it.toMutableList(), this)
             recyclerView.adapter = viewAdapter
             updateSongsCountView()
         })
+
         return root
     }
 
-    private fun updateSongsCountView() {
-        songsCountTextView.text = getString(R.string.songs_count, databaseCount, filterCount)
+    override fun onRecyclerViewClicked(position: Int) {
+        if (position == NO_POSITION) return
+
+        val lyrics = viewAdapter.getItem(position).lyrics
+        if (!lyrics.isNullOrEmpty()) {
+            startActivity(activity?.lyricsActivityIntent(lyrics))
+        } else {
+            Toast.makeText(activity, "This song does not have lyrics!", Toast.LENGTH_SHORT).show()
+        }
     }
 
-    override fun onRecyclerViewClicked(position: Int) {
-        if (position != NO_POSITION) {
-            val intent = Intent(activity, LyricsActivity::class.java)
-            intent.putExtra("KEY_LYRICS", viewAdapter.getItem(position).lyrics)
-            startActivity(intent)
-        }
+    /**
+     * Update the view displaying the number of songs in the database and the number of songs matching the search
+     * results. Must be updated each time the database song table or the user search query change.
+     */
+    private fun updateSongsCountView() = songsCountTextView.apply {
+        text = getString(R.string.songs_count, databaseCount, filterCount)
     }
 }
